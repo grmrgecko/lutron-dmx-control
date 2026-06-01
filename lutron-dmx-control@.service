@@ -1,12 +1,18 @@
 [Unit]
 Description=Lutron DMX Control
-After=network.target
+After=network-online.target olad@%i.service
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=20
 
 [Service]
-Type=simple
+Type=notify
+NotifyAccess=main
+Environment=PYTHONUNBUFFERED=1
 ExecStart=/usr/bin/python3 /home/%I/lutron-dmx-control.py
-Restart=on-failure
-RestartSec=10
+Restart=always
+RestartSec=5
+WatchdogSec=120
 User=%I
 
 [Install]

@@ -1,2 +1,0 @@
-2021-09-02 23:56:55 WARNING (MainThread) [homeassistant.components.http.ban] Login attempt or request with invalid authentication from 10.11.0.2 (10.11.0.2) (Mozilla/5.0 (X11; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0)
-2021-09-02 23:56:55 WARNING (MainThread) [homeassistant.bootstrap] Support for the running Python version 3.7.3 is deprecated and will be removed in the first release after December 7, 2020. Please upgrade Python to 3.8.0 or higher.

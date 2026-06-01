@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# Local config holds secrets (MQTT password); never commit it.
+config.yaml

@@ -1,0 +1,67 @@
+# Configuration for lutron-dmx-control.
+#
+# Copy this file to config.yaml (kept out of git) and edit it:
+#   sudo install -d /etc/lutron-dmx-control
+#   sudo cp config.example.yaml /etc/lutron-dmx-control/config.yaml
+#   sudo chmod 600 /etc/lutron-dmx-control/config.yaml   # contains the MQTT password
+#
+# The program searches for the config in this order:
+#   1. --config PATH on the command line
+#   2. $LUTRON_CONFIG
+#   3. config.yaml next to the script
+#   4. ~/.config/lutron-dmx-control/config.yaml
+#   5. /etc/lutron-dmx-control/config.yaml
+
+# --- QSE NWK serial link ---
+serial:
+  # Find yours with: ls -lah /dev/serial/by-id/
+  device: /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller-if00-port0
+  # Must match the dipswitch on the QSE-CI-NWK-E (9600/19200/38400/115200).
+  baud: 115200
+
+# --- GRAFIK Eye QS ---
+qse:
+  integration_id: 1   # Integration ID bound to the GRAFIK Eye main unit
+  zones: 6            # Controllable zones on your model (max 24)
+  fade: "00:00"      # Fade sent with each level command; "00:00" = instant (OLA fades)
+
+# --- DMX (OLA) ---
+# Optional. Set enabled: false to run without DMX (e.g. MQTT-only control); when
+#  disabled, OLA does not need to be installed.
+dmx:
+  enabled: true
+  universe: 3
+  start_address: 0    # 0-indexed offset of zone 1 within the universe
+  # While a DMX signal is active, MQTT commands are locked out so DMX stays in
+  #  control. This is how long (seconds) after the last DMX universe update the
+  #  lockout persists; once it elapses MQTT can drive the lights again.
+  lockout_sec: 5
+
+# --- Reliability tuning (optional; defaults shown) ---
+reliability:
+  rx_timeout_sec: 60
+  watchdog_interval_sec: 15
+  reconnect_backoff_min_sec: 1
+  reconnect_backoff_max_sec: 30
+  send_all_interval_sec: 10
+
+# --- Logging ---
+logging:
+  level: INFO          # DEBUG for verbose TX/RX tracing
+
+# --- MQTT / Home Assistant ---
+# Optional. Set enabled: false to disable; when disabled, paho-mqtt does not
+#  need to be installed.
+mqtt:
+  enabled: true
+  broker: 127.0.0.1
+  port: 1883
+  topic: lutron/qse-nwk
+  username: mqtt
+  password: change-me
+  client_id: null      # null -> auto-generated
+  # Publish a Home Assistant MQTT discovery config so the light appears
+  #  automatically (no manual configuration.yaml entry needed).
+  discovery: true
+  discovery_prefix: homeassistant
+  device_name: Lutron QSE NWK
