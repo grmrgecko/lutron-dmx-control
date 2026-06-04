@@ -2,17 +2,41 @@
 
 set -e
 
-USER=$(whoami)
-if [ "$USER" != "root" ]; then
-    echo "Please use sudo with this install script to ensure right permissions for installation."
+# Determine the service user before we (potentially) re-exec as root, so we can
+#  capture the human who invoked the script. Priority: explicit TARGET_USER env,
+#  then $SUDO_USER (set when already run via sudo), then the current user. We fall
+#  back to "pi" only if we somehow end up with an empty or root value.
+DEFAULTED_TO_PI=0
+if [ -z "$TARGET_USER" ]; then
+    TARGET_USER="${SUDO_USER:-$(whoami)}"
+fi
+if [ -z "$TARGET_USER" ] || [ "$TARGET_USER" = "root" ]; then
+    TARGET_USER="pi"
+    DEFAULTED_TO_PI=1
+fi
+
+# Re-run ourselves under sudo if we are not already root. Pass TARGET_USER through
+#  so the resolved (non-root) user survives the privilege escalation.
+if [ "$(id -u)" -ne 0 ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        exec sudo TARGET_USER="$TARGET_USER" "$0" "$@"
+    fi
+    echo "Please run this install script as root (or install sudo) to ensure right permissions for installation."
     exit 1
 fi
 
 # Service user (matches the systemd template instance: lutron-dmx-control@<TARGET_USER>).
-TARGET_USER="${TARGET_USER:-pi}"
 TARGET_HOME=$(getent passwd "$TARGET_USER" | cut -d: -f6)
+
+# If we couldn't infer a user and the "pi" fallback doesn't exist on this system,
+#  ask which user the service should run as rather than failing outright.
+if [ -z "$TARGET_HOME" ] && [ "$DEFAULTED_TO_PI" -eq 1 ]; then
+    read -r -p "Default user 'pi' not found. Which user should the service run as? " TARGET_USER
+    TARGET_HOME=$(getent passwd "$TARGET_USER" | cut -d: -f6)
+fi
+
 if [ -z "$TARGET_HOME" ]; then
-    echo "Target user '$TARGET_USER' does not exist. Re-run with TARGET_USER=<name> sudo ./install.sh"
+    echo "Target user '$TARGET_USER' does not exist. Re-run with TARGET_USER=<name> ./install.sh"
     exit 1
 fi
 
