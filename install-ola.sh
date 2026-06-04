@@ -15,7 +15,10 @@
 # Override the version, build location, or parallel-make jobs if needed:
 #   OLA_VERSION=0.10.9 BUILD_DIR=~/ola-build JOBS=4 bash ./install-ola.sh
 #
-# Build the OLA docs reference: https://www.openlighting.org/ola/linuxinstall/
+# This script was written based on the official OLA build guide; you do not need
+#  to follow that guide as well -- running this script is enough. The guide is
+#  linked only as a reference for what these steps are doing:
+#  https://www.openlighting.org/ola/linuxinstall/
 
 set -e
 

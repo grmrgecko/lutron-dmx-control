@@ -6,8 +6,10 @@ the light appears automatically.
 
 I run this on a Raspberry Pi (a Pi Zero works) on **Raspberry Pi OS / Raspbian 13
 (Trixie)**. OLA is no longer packaged for recent Debian/Raspbian releases, so it is
-built from source at the `0.10.9` release tag with `install-ola.sh` (see below),
-following the [OLA build guide](https://www.openlighting.org/ola/linuxinstall/).
+built from source at the `0.10.9` release tag. Just run the included `install-ola.sh`
+(see below) — it handles the whole build for you. The script was written based on the
+[OLA build guide](https://www.openlighting.org/ola/linuxinstall/), so you don't need
+to follow that guide yourself; it's linked only as a reference for what the script does.
 
 DMX and MQTT are independent, optional components. Serial control of the QSE is
 always active; you can run with DMX only, MQTT only, or both.
