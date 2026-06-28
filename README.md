@@ -1,3 +1,8 @@
+> [!WARNING]
+> **This project is deprecated.** It has been superseded by
+> [grmrgecko/lutron-control](https://github.com/grmrgecko/lutron-control).
+> Please use that project instead.
+
 # Lutron GRAFIK Eye QS — DMX & Home Assistant control
 
 This lets you control a **Lutron GRAFIK Eye QS** lighting unit from two places it
